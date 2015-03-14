@@ -15,14 +15,14 @@ def GetNames(names):
 
 
 def MarkovModel(name, order, MyModel):
-    '''this defines my markov model for any '''
+    '''this defines my markov model for any such order.'''
 
     # need to iterate len of name - order
     # to get 1st letter and expanding to 1st + 1, iteratively
 
     for i in range(0, len(name) - order):
         curr_letters = name[i:i + order]
-        next_letter = name[i+ order]
+        next_letter = name[i + order]
 
         #create a dict entry for the newest combination not yet in the model
         if curr_letters not in MyModel:
@@ -66,5 +66,66 @@ def ExpandMM(nameslist, order):
 
     return ExpandedModel
 
-print(ExpandMM(GetNames("namesBoys.txt"), 7))
-print(ExpandMM(["Solinari"], 7))
+#print(ExpandMM(GetNames("namesBoys.txt"), 7))
+#print(ExpandMM(["avacadoo"], 9))
+
+
+
+# Test to confirm frequency numbers to proabilities
+# These are just some slices I pulled from the full output of the boys names
+##test = { 'Gi': {'o': 3, 'a': 2, 'l': 2, 'd': 1},
+##         'N': {'e': 3, 'i': 10, 'a': 7, 'o': 4},
+##         'st': {'e': 2, 'o': 13, 'i': 11, 'a': 3, 'u': 2}}
+##
+##
+##for key in test:
+##    print(test[key])
+##    print(test[key].values())
+##    theSum = sum(test[key].values())
+##    print(theSum)
+##
+##    for lilkey in test[key]:
+##        print(lilkey)
+##        print(test[key][lilkey])
+##        test[key][lilkey] = float(test[key][lilkey] / theSum)
+##        print(test[key][lilkey])
+##
+### cofirm that this works
+##for key in test:
+##    print(test[key])
+##    print(test[key].values())
+##    theSum = sum(test[key].values())
+##    print(theSum)
+
+
+
+def freq2prob(markovfreq):
+    '''this function goes through all the inner hashes
+    and converts the number of copies each inner key was found(the value)
+    to a probability that sums to 1 for that inner hash. this is stochasticity
+    I don't know if this is row or column though...since this is N dimensions..'''
+
+    # for every fragment in the expanded markov matrix sum its frequencies
+    for frag in markovfreq:
+        
+        fragSum = sum(markovfreq[frag].values())
+
+        # then set each value within that fragment to float(value/sum)
+        for subfrag in markovfreq[frag]:
+
+            markovfreq[frag][subfrag] = float(markovfreq[frag][subfrag] / fragSum)
+
+    return markovfreq
+
+print(freq2prob(ExpandMM(GetNames("namesBoys.txt"), 7)))
+
+            
+
+
+
+    
+
+
+
+
+
