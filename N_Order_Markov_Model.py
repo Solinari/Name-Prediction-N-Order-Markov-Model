@@ -139,7 +139,7 @@ def weighted_choice(picks):
     for pick, weight in picks:
         
         # if the last upto plus this weight is greater than rand
-        # then return pick and increment upto by the last weight found
+        # then return a picked letter and increment upto by the last weight found
         # this is interesting because these hashes change every run..
         if upto + weight > rand:
             return pick
@@ -170,6 +170,8 @@ def weighted_choice(picks):
 ##        print(key2)
 ##        #inner values are floats
 ##        print(test2[key][key2])
+
+
 
     
 
