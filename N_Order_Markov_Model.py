@@ -1,6 +1,8 @@
 #N Order Markov Model
 #let's predict some names. :)
 
+import random
+
 def GetNames(names):
     '''gets the list of names I need for the model'''
 
@@ -117,14 +119,59 @@ def freq2prob(markovfreq):
 
     return markovfreq
 
-print(freq2prob(ExpandMM(GetNames("namesBoys.txt"), 7)))
-
-            
+#print(freq2prob(ExpandMM(GetNames("namesBoys.txt"), 7)))
 
 
+def weighted_choice(picks):
+    '''This will chose a key from the subdict
+    based on the probability value of it's key'''
+
+    #I know this sums to 1 for this model, but doing this anyways
+    tot = sum(weight for pick, weight in picks)
+
+    #a random float between 0 and 1
+    rand = random.uniform(0, tot)
+
+    #start at 0
+    upto = 0
+
+    # think of this for key, value in dict.items()
+    for pick, weight in picks:
+        
+        # if the last upto plus this weight is greater than rand
+        # then return pick and increment upto by the last weight found
+        # this is interesting because these hashes change every run..
+        if upto + weight > rand:
+            return pick
+
+        upto += weight
+
+
+# some chosen slice sums to 1.
+# now lets build a weight random generation model
+# to select elements with their proabilitstic weights accounted for
+##test2 = {'F': {'e': 0.17647058823529413,
+##              'a': 0.058823529411764705,
+##              'i': 0.23529411764705882,
+##              'l': 0.058823529411764705,
+##              'r': 0.47058823529411764}}
+##
+##for key in test2:
+##    print(test2[key].items())
+##
+##    # class object dict_items
+##    print(type(test2[key].items()))
+##    #print(sum(test2[key].values()))
+##    print("Random pick is:  ")
+##    print(weighted_choice(test2[key].items()))
+##
+##    for key2 in test2[key]:
+##        #inner keys are strings
+##        print(key2)
+##        #inner values are floats
+##        print(test2[key][key2])
 
     
-
 
 
 
