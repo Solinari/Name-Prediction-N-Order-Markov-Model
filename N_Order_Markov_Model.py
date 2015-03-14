@@ -171,10 +171,89 @@ def weighted_choice(picks):
 ##        #inner values are floats
 ##        print(test2[key][key2])
 
+def generateNames(order, minlen, maxlen, number, nameslist):
+    ''' use all above functions to generate new names not in the names list passed
+    a number of times equal to number'''
+
+    myList = GetNames(nameslist)
+
+    MyMarkovModel = freq2prob(ExpandMM(myList, order))
+    print(MyMarkovModel)
+
+    names = []
+
+    while number > 0:
+
+        name = ''
+
+        while len(name) < minlen:
+
+            name = random.choice(MyMarkovModel)
+            print(name)
+
+        #build the name
+        while name < maxlen:
+            pass
+            
+        
+        names.append(name)
+        number -= 1
+
+generateNames(3, 3, 10, 5, "namesBoys.txt")
+
+def Go():
+    '''props user for UI calls'''
 
 
-    
+    while True:
+
+        User = str(input("Please enter B to begin Name Prediction or Q to quit\n"))
+        User.upper()
+                         
+        if User == "Q":
+            break
+                         
+        if User == "B":
+
+            #order
+            Order = int(input("Please enter a positive integer between 1 and 15 for the Order of the markov model's name prediction:\n\n \n\n"))
+
+            #min length name
+            minLen = int(input("Please enter a positive interger beweteen 3 and 15 for the minimum length of the name\n\n"))
+
+            #max length name
+
+            maxLen= int(input("Please enter a positive interger beweteen 3 and 15 for the minimum length of the name\n\n"))
+
+            if 1 <= Order <= 10 and 3 <= minLen <= 15 and minLen < maxLen:
+
+                # Gender
+                Gender = str(input("Please enter:\n\n - M for the male names set\n\n - F for the female names set\n\n"))
+
+                # number of names
+
+                numOfNames = int(input("Finally, how many names would you like me to generate?\n\n"))
+                
+
+                if Gender == "F":
+
+                    # call female list
+                    generateNames(Order, minLen, maxLen, Gender, numOfNames, "namesGirls.txt")
+                    continue
+                                  
+                if Gender == "M":
+
+                    # call male list
+                    generateNames(Order, minLen, maxLen, Gender, numOfNames, "namesBoys.txt")
+                    continue
+                
+                if  Gender != "F" or Gender != "M":
+                    continue
+
+        if User != "C" or User != "Q":
+            continue
+
+    print("Good Bye!")
 
 
-
-
+#Go()
