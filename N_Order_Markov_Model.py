@@ -13,6 +13,7 @@ def GetNames(names):
     stripped = [read_lines[x].rstrip('\n')
                 for x in range(len(read_lines))]
 
+
     return stripped
 
 
@@ -178,9 +179,17 @@ def generateNames(order, minlen, maxlen, number, nameslist):
     myList = GetNames(nameslist)
 
     MyMarkovModel = freq2prob(ExpandMM(myList, order))
-    print(MyMarkovModel)
+    keys = list(MyMarkovModel.keys())
+
+    # these are all that I can start with intitially
+    starts = [keys[x]
+              for x in range(len(keys))
+              if keys[x].istitle() == True]
+    
 
     names = []
+
+    chosen = ''
 
     while number > 0:
 
@@ -188,18 +197,36 @@ def generateNames(order, minlen, maxlen, number, nameslist):
 
         while len(name) < minlen:
 
-            name = random.choice(MyMarkovModel)
+            # we start with a randomly chosen beginning
+            # since these don't have weights on them
+            # because they cannot be entailed from
+            # any such char before them
+            if len(name) == 0:
+                begin = random.choice(starts)
+                name += begin
+                chosen = begin
+                print(name)
+
+            # append something if it's still less than minlen
+            # weighted_choice(test2[key].items())
+            pick = weighted_choice(MyMarkovModel[chosen].items())
+            name += pick
+            chosen = pick
             print(name)
 
-        #build the name
-        while name < maxlen:
-            pass
-            
+        #build the rest of the name
+        while len(name) <= maxlen:
+            pick = weighted_choice(MyMarkovModel[chosen].items())
+            name += pick
+            chosen = pick
+            print(name)
         
         names.append(name)
         number -= 1
 
-generateNames(3, 3, 10, 5, "namesBoys.txt")
+        print(names)
+
+generateNames(10, 4, 8, 10, "namesGirls.txt")
 
 def Go():
     '''props user for UI calls'''
@@ -208,7 +235,7 @@ def Go():
     while True:
 
         User = str(input("Please enter B to begin Name Prediction or Q to quit\n"))
-        User.upper()
+        User = User.upper()
                          
         if User == "Q":
             break
@@ -229,7 +256,8 @@ def Go():
 
                 # Gender
                 Gender = str(input("Please enter:\n\n - M for the male names set\n\n - F for the female names set\n\n"))
-
+                Gender = Gender.upper()
+                
                 # number of names
 
                 numOfNames = int(input("Finally, how many names would you like me to generate?\n\n"))
