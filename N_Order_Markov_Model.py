@@ -12,10 +12,8 @@ def GetNames(names):
 
     stripped = [read_lines[x].rstrip('\n')
                 for x in range(len(read_lines))]
-
-
+    
     return stripped
-
 
 def MarkovModel(name, order, MyModel):
     '''this defines my markov model for any such order.'''
@@ -42,12 +40,6 @@ def MarkovModel(name, order, MyModel):
 
     return MyModel
 
-
-
-
-#print(MarkovModel("aaaaaaaaaaabbbbbbb", 7))
-#print(GetNames("namesBoys.txt"))
-
 def ExpandMM(nameslist, order):
     '''now pass my list of names into here,
     and expand the model on every single new name
@@ -69,39 +61,6 @@ def ExpandMM(nameslist, order):
 
     return ExpandedModel
 
-#print(ExpandMM(GetNames("namesBoys.txt"), 7))
-#print(ExpandMM(["avacadoo"], 9))
-
-
-
-# Test to confirm frequency numbers to proabilities
-# These are just some slices I pulled from the full output of the boys names
-##test = { 'Gi': {'o': 3, 'a': 2, 'l': 2, 'd': 1},
-##         'N': {'e': 3, 'i': 10, 'a': 7, 'o': 4},
-##         'st': {'e': 2, 'o': 13, 'i': 11, 'a': 3, 'u': 2}}
-##
-##
-##for key in test:
-##    print(test[key])
-##    print(test[key].values())
-##    theSum = sum(test[key].values())
-##    print(theSum)
-##
-##    for lilkey in test[key]:
-##        print(lilkey)
-##        print(test[key][lilkey])
-##        test[key][lilkey] = float(test[key][lilkey] / theSum)
-##        print(test[key][lilkey])
-##
-### cofirm that this works
-##for key in test:
-##    print(test[key])
-##    print(test[key].values())
-##    theSum = sum(test[key].values())
-##    print(theSum)
-
-
-
 def freq2prob(markovfreq):
     '''this function goes through all the inner hashes
     and converts the number of copies each inner key was found(the value)
@@ -119,9 +78,6 @@ def freq2prob(markovfreq):
             markovfreq[frag][subfrag] = float(markovfreq[frag][subfrag] / fragSum)
 
     return markovfreq
-
-#print(freq2prob(ExpandMM(GetNames("namesBoys.txt"), 7)))
-
 
 def weighted_choice(picks):
     '''This will chose a key from the subdict
@@ -147,31 +103,6 @@ def weighted_choice(picks):
 
         upto += weight
 
-
-# some chosen slice sums to 1.
-# now lets build a weight random generation model
-# to select elements with their proabilitstic weights accounted for
-##test2 = {'F': {'e': 0.17647058823529413,
-##              'a': 0.058823529411764705,
-##              'i': 0.23529411764705882,
-##              'l': 0.058823529411764705,
-##              'r': 0.47058823529411764}}
-##
-##for key in test2:
-##    print(test2[key].items())
-##
-##    # class object dict_items
-##    print(type(test2[key].items()))
-##    #print(sum(test2[key].values()))
-##    print("Random pick is:  ")
-##    print(weighted_choice(test2[key].items()))
-##
-##    for key2 in test2[key]:
-##        #inner keys are strings
-##        print(key2)
-##        #inner values are floats
-##        print(test2[key][key2])
-
 def generateNames(order, minlen, maxlen, number, nameslist):
     ''' use all above functions to generate new names not in the names list passed
     a number of times equal to number'''
@@ -185,7 +116,6 @@ def generateNames(order, minlen, maxlen, number, nameslist):
     starts = [keys[x]
               for x in range(len(keys))
               if keys[x].istitle() == True]
-    
 
     names = []
 
@@ -205,32 +135,30 @@ def generateNames(order, minlen, maxlen, number, nameslist):
                 begin = random.choice(starts)
                 name += begin
                 chosen = begin
-                print(name)
 
             # append something if it's still less than minlen
             # weighted_choice(test2[key].items())
             pick = weighted_choice(MyMarkovModel[chosen].items())
             name += pick
             chosen = pick
-            print(name)
 
         #build the rest of the name
         while len(name) <= maxlen:
             pick = weighted_choice(MyMarkovModel[chosen].items())
             name += pick
             chosen = pick
-            print(name)
-        
-        names.append(name)
-        number -= 1
 
-        print(names)
+        # the assignment is not to append a name if it is in the list
+        if name not in myList:
+            names.append(name)
+            number -= 1
 
-generateNames(10, 4, 8, 10, "namesGirls.txt")
+    #print the output!
+    for name in names:
+        print("{}. {}".format(str(names.index(name) + 1), name))
 
 def Go():
-    '''props user for UI calls'''
-
+    '''prompts user for UI calls'''
 
     while True:
 
@@ -243,16 +171,16 @@ def Go():
         if User == "B":
 
             #order
-            Order = int(input("Please enter a positive integer between 1 and 15 for the Order of the markov model's name prediction:\n\n \n\n"))
+            Order = int(input("Please enter a positive integer between 1 and 15 for the Order of the markov model's name prediction:\n\n"))
 
             #min length name
             minLen = int(input("Please enter a positive interger beweteen 3 and 15 for the minimum length of the name\n\n"))
 
             #max length name
 
-            maxLen= int(input("Please enter a positive interger beweteen 3 and 15 for the minimum length of the name\n\n"))
+            maxLen= int(input("Please enter a positive interger greater than your minimum length and less than 15 (for sanity..) for the maximum length of the name\n\n"))
 
-            if 1 <= Order <= 10 and 3 <= minLen <= 15 and minLen < maxLen:
+            if 1 <= Order <= 15 and 3 <= minLen <= 15 and minLen < maxLen:
 
                 # Gender
                 Gender = str(input("Please enter:\n\n - M for the male names set\n\n - F for the female names set\n\n"))
@@ -260,19 +188,18 @@ def Go():
                 
                 # number of names
 
-                numOfNames = int(input("Finally, how many names would you like me to generate?\n\n"))
-                
+                numOfNames = int(input("Finally, how many names would you like me to generate?\n\n"))               
 
                 if Gender == "F":
 
                     # call female list
-                    generateNames(Order, minLen, maxLen, Gender, numOfNames, "namesGirls.txt")
+                    generateNames(Order, minLen, maxLen, numOfNames, "namesGirls.txt")
                     continue
                                   
                 if Gender == "M":
 
                     # call male list
-                    generateNames(Order, minLen, maxLen, Gender, numOfNames, "namesBoys.txt")
+                    generateNames(Order, minLen, maxLen, numOfNames, "namesBoys.txt")
                     continue
                 
                 if  Gender != "F" or Gender != "M":
@@ -283,5 +210,4 @@ def Go():
 
     print("Good Bye!")
 
-
-#Go()
+Go()
