@@ -10,7 +10,7 @@ def GetNames(names):
     read_lines = infile.readlines()
     infile.close()
 
-    stripped = [read_lines[x].rstrip('\n')
+    stripped = [read_lines[x].replace('\n', '_')
                 for x in range(len(read_lines))]
     
     return stripped
@@ -103,6 +103,18 @@ def weighted_choice(picks):
 
         upto += weight
 
+def choseWithoutStopChar(stop, choices):
+    '''make a choice but make sure a choice cannot be picked'''
+
+    test = random.choice(choices)
+
+    if test == stop:
+        choseWithoutStopChar(stop, choices)
+
+    return test
+
+
+
 def generateNames(order, minlen, maxlen, number, nameslist):
     ''' use all above functions to generate new names not in the names list passed
     a number of times equal to number'''
@@ -132,10 +144,11 @@ def generateNames(order, minlen, maxlen, number, nameslist):
             # because they cannot be entailed from
             # any such char before them
             if len(name) == 0:
-                begin = random.choice(starts)
+                begin = choseWithoutStopChar('_', starts)
                 name += begin
                 chosen = begin
 
+            # print("begin: {} name: {} chosen: {}".format(begin, name, chosen))
             # append something if it's still less than minlen
             # weighted_choice(test2[key].items())
             pick = weighted_choice(MyMarkovModel[chosen].items())
@@ -143,7 +156,7 @@ def generateNames(order, minlen, maxlen, number, nameslist):
             chosen = pick
 
         #build the rest of the name
-        while len(name) <= maxlen:
+        while len(name) <= maxlen and chosen != '_':
             pick = weighted_choice(MyMarkovModel[chosen].items())
             name += pick
             chosen = pick
@@ -155,7 +168,7 @@ def generateNames(order, minlen, maxlen, number, nameslist):
 
     #print the output!
     for name in names:
-        print("{}. {}".format(str(names.index(name) + 1), name))
+        print("{}. {}".format(str(names.index(name) + 1), name.rstrip('_')))
 
 def Go():
     '''prompts user for UI calls'''
