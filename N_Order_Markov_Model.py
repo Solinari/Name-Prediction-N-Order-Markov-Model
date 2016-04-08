@@ -148,7 +148,7 @@ def generateNames(order, minlen, maxlen, number, nameslist):
                 name += begin
                 chosen = begin
 
-            # print("begin: {} name: {} chosen: {}".format(begin, name, chosen))
+            print("begin: {} name: {} chosen: {}".format(begin, name, chosen))
             # append something if it's still less than minlen
             # weighted_choice(test2[key].items())
             pick = weighted_choice(MyMarkovModel[chosen].items())
