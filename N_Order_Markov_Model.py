@@ -183,8 +183,10 @@ def Go():
             if 1 <= Order <= 15 and 3 <= minLen <= 15 and minLen < maxLen:
 
                 # Gender
-                Gender = str(input("Please enter:\n\n - M for the male names set\n\n - F for the female names set\n\n"))
+                Gender = str(input("Please enter:\n\n - M for the male names set\n\n - F for the female names set\n\n- S for Space Marine names set\n\n"))
                 Gender = Gender.upper()
+
+                genChoice = {"F", "M", "S"}
                 
                 # number of names
 
@@ -201,8 +203,14 @@ def Go():
                     # call male list
                     generateNames(Order, minLen, maxLen, numOfNames, "namesBoys.txt")
                     continue
+
+                if Gender == "S":
+
+                    # call male list
+                    generateNames(Order, minLen, maxLen, numOfNames, "namesSpaceMarines.txt")
+                    continue
                 
-                if  Gender != "F" or Gender != "M":
+                if  Gender not in genChoice:
                     continue
 
         if User != "C" or User != "Q":
